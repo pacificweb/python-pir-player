@@ -15,24 +15,22 @@ class MotionLogic:
 
     def __init__(self, pin):
 
-        # Detecteur de mouvement
         self.Sensor = MotionSensor(pin)
 
     def Dispose(self):
         del self.Sensor
 
-	# Sensor -----------------------------------------
+    # Sensor -----------------------------------------
     def StartSensor(self):
         self.Sensor.when_motion = self.OnMotionStart
         self.Sensor.when_no_motion = self.OnMotionStop
 
-	# Sensor Events
+    # Sensor Events
     def OnMotionStart(self):
         log.info("OnMotionStart")
-	
+
     def OnMotionStop(self):
         log.info("OnMotionStop")
-	# Sensor -----------------------------------------
 
 ##################################################################################################################################################
 
@@ -42,9 +40,12 @@ def main(args=None):
 
     logic = MotionLogic(7)
     logic.StartSensor()
+ 
+    p = subprocess.Popen('./sleep.sh')
 
     try:
         while True:
+            print p.poll()
             time.sleep(1)
     except (KeyboardInterrupt):
         print('exit(0)')
