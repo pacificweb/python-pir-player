@@ -1,4 +1,4 @@
 # python-pir-player
 
-Dépendences
+Dépendances
 - gpiozero
