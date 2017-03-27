@@ -16,6 +16,7 @@ class MotionLogic:
     def __init__(self, pin):
 
         self.Sensor = MotionSensor(pin)
+        self.ProcPlayer = None
 
     def Dispose(self):
         del self.Sensor
@@ -27,25 +28,31 @@ class MotionLogic:
 
     # Sensor Events
     def OnMotionStart(self):
-        log.info("OnMotionStart")
+        print "OnMotionStart"
+        log.info("OnMotionStart") 
+        print self.ProcPlayer
+        if self.ProcPlayer is None:
+            self.ProcPlayer = subprocess.Popen(['omxplayer', '-o', 'local', 'video.avi'])
+        elif self.ProcPlayer.poll() is not None:
+            self.ProcPlayer = subprocess.Popen(['omxplayer', '-o', 'local', 'video.avi'])
 
     def OnMotionStop(self):
+        print "OnMotionStop "
         log.info("OnMotionStop")
+        if self.ProcPlayer is not None:
+            print self.ProcPlayer.poll()
 
 ##################################################################################################################################################
 
 def main(args=None):
 
-    logging.basicConfig(filename='pir-player.log',datefmt='%Y-%m-%d %I:%M:%S',format='%(levelname)s : %(asctime)s %(message)s',level=logging.DEBUG)
+    logging.basicConfig(filename='debug-player.log',datefmt='%Y-%m-%d %I:%M:%S',format='%(levelname)s : %(asctime)s %(message)s',level=logging.DEBUG)
 
     logic = MotionLogic(7)
     logic.StartSensor()
  
-    p = subprocess.Popen('./sleep.sh')
-
     try:
         while True:
-            print p.poll()
             time.sleep(1)
     except (KeyboardInterrupt):
         print('exit(0)')
